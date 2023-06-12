@@ -1,0 +1,118 @@
+.fieldColor {
+    color: #000;
+}
+
+.signUpLeft {
+    justify-content: space-between;
+}
+
+.signUpRight {
+    position: relative;
+    background-color: #0066FF;
+}
+
+.signUpRight .rightImage {
+    position: relative;
+}
+
+.inputField {
+    border-color: #7C7C7C;
+    padding: 3px;
+}
+
+.setCustomWidth {
+    width: 49%;
+}
+
+.setCustomProperty {
+    width: 49%;
+    flex-direction: row-reverse !important;
+    align-items: center !important;
+    justify-content: start !important;
+}
+
+.setCustomProperty label{
+    padding-bottom: 0px !important;
+}
+
+.setCustomProperty input {
+    width: auto !important;
+    margin-right: 8px !important;
+    cursor: pointer;
+}
+
+.buttonStyle {
+    background-color: #0066FF;
+    padding: 8px 0px;
+    border-radius: 11px;
+    cursor: pointer;
+}
+
+.colorRedirect {
+    color: #0066FF;
+    cursor: pointer;
+}
+
+.rightImageStyle {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.loginImageStyle {
+    width: 95%;
+    height: 95%;
+    object-fit: contain;
+}
+
+.LoginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginDivHeight .rightText {
+    height: 40% !important;
+}
+
+.loginDivHeight .rightImage {
+    height: 60% !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .signUpOuter {
+        flex-direction: column-reverse;
+        overflow: visible !important;
+    }
+
+    .rightImageStyle {
+        width: 60%;
+        height: 60%;
+        margin-bottom: 40px;
+    }
+
+    .loginImageStyle {
+        width: 60%;
+        height: 60%;
+        margin-bottom: 40px;
+    }
+
+    .rightText h2 {
+        font-size: 32px !important;
+        padding: 50px 0;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+
+    .rightImageStyle {
+        width: 80%;
+        height: 80%;
+    }
+
+    .loginImageStyle {
+        width: 75%;
+        height: 75%;
+    }
+}
