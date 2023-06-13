@@ -1,0 +1,29 @@
+.notificationStyle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.customStyle {
+    position: absolute;
+    top: 56%; 
+    bottom: 50%;
+    transform: translate(0%, 56%);
+    z-index: 1;
+    right: 10px;
+}
+
+.customStyle button {
+    padding: 1px !important;
+    margin-bottom: 0px !important;
+}
+
+.customStyle svg {
+    background-color: red !important;
+    border-radius: 5px !important;
+}
+
+.abc {
+    pointer-events: none;
+}

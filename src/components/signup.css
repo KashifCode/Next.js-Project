@@ -41,6 +41,12 @@
     cursor: pointer;
 }
 
+.setCustomProperty .fieldColor {
+    flex-direction: row-reverse !important;
+    align-items: center !important;
+    justify-content: start !important;
+}
+
 .buttonStyle {
     background-color: #0066FF;
     padding: 8px 0px;

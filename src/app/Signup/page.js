@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+import { createRoot } from 'react-dom/client';
 import Image from 'next/image'
 import Link from 'next/link'
 import signUpImg from "@/assets/signUpImage.png"
@@ -10,21 +11,46 @@ import InputField from '@/components/InputField'
 import { resetForm, acceptUser } from '@/Redux/Features/auth-slice'
 import { useState, createContext } from 'react'
 import { useDispatch } from 'react-redux'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import ErrorPopOver from '@/components/ErrorPopOver';
 
 export const signUpContext = createContext();
 const Signup = () => {
+
+    const schema = yup.object().shape({
+        fname: yup.string("Your First Name Must be a String").required("First Name is Required!"),
+        lname: yup.string("Your Last Name Must be a String").required("Last Name is Required!"),
+        email: yup.string().email("Invalid Email Format").required("E-Mail is Required!"),
+        school: yup.string().required("Please Select a School!"),
+        pass: yup.string().min(8).max(16).required("Password is Required!"),
+        cnfrmPass: yup.string().oneOf([yup.ref("pass"), null], "Your Password Does Not Match!").required("Confirm Your Password Again!")
+    })
+    const { register, handleSubmit, formState: {errors} } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmit = (data) => {
+        console.log(data);
+        //let parent = document.getElementById("appendComponent")
+        //createRoot(parent).render(<Notification message={"Successfully Registered"}/>)
+        dispatch(acceptUser(allStates))
+    }
+
     const [allStates, setAllStates] = useState({})
     const dispatch = useDispatch();
     const onErrorOccured = () => {
         setAllStates(dispatch(resetForm()))
     }
-    const onSuccessEnter = () => {
-        dispatch(acceptUser(allStates))
-    }
+
     console.log(allStates);
+
     return (
         <>
-            <signUpContext.Provider value={{allStates, setAllStates}}>
+        {/* <div id='appendComponent'></div>
+             */}
+            <signUpContext.Provider value={{allStates, setAllStates, register}}>
                 <div className="signUpOuter w-full md:h-screen flex justify-center items-center overflow-hidden">
 
                     <div className="signUpLeft w-full md:w-1/2 h-screen md:h-full flex items-center flex-col">
@@ -34,41 +60,43 @@ const Signup = () => {
                                 alt='Logo'
                                 src={academyLogo}
                                 width={110}
-                                height={110} />
+                                height={110}/>
                             <h1 className='text-black font-bold text-2xl pt-3'>Registration</h1>
                         </div>
 
                         <div className="leftForm w-4/5 h-4/5">
-                            <form action=''>
+                            <form onSubmit={handleSubmit(onSubmit)} action=''>
 
                                 <div className='flex justify-between'>
-                                    <InputField inputLabel={"First Name"} inputType={"text"} inputName={"fname"} Addclasses={"setCustomWidth"} />
-                                    <InputField inputLabel={"Last Name"} inputType={"text"} inputName={"lname"} Addclasses={"setCustomWidth"} />
+                                    <InputField inputLabel={"First Name"} inputType={"text"} inputName={"fname"} Addclasses={"setCustomWidth"} errorMessage={errors.fname?.message}/>
+                                    <InputField inputLabel={"Last Name"} inputType={"text"} inputName={"lname"} Addclasses={"setCustomWidth"} errorMessage={errors.lname?.message}/>
                                 </div>
 
-                                <InputField inputLabel={"Email"} inputType={"email"} inputName={"email"} Addclasses={"w-full mt-2"} />
+                                <InputField inputLabel={"Email"} inputType={"email"} inputName={"email"} Addclasses={"w-full mt-2"} errorMessage={errors.email?.message}/>
 
                                 <div className='flex flex-col items-start w-full mt-2'>
-                                    <label htmlFor="location" className="fieldColor pb-2 font-semibold">Location</label>
-                                    <select className='inputField fieldColor border-2 rounded-md w-full' id="location" required>
+                                    <label htmlFor="school" className="fieldColor pb-2 font-semibold">School</label>
+                                    <select className='inputField fieldColor border-2 rounded-md w-full'
+                                    {...register("school")}>
                                         <option value="">--Select--</option>
-                                        <option value="lahore">Lahore</option>
-                                        <option value="lahore">Islamabad</option>
-                                        <option value="lahore">Karachi</option>
+                                        <option value="lahore">APS</option>
+                                        <option value="lahore">Fazaia</option>
+                                        <option value="lahore">Behria</option>
                                     </select>
+                                    {errors.school?.message == undefined ? "" : <ErrorPopOver errorMessage={errors.school?.message} isError={true}/>}
                                 </div>
 
-                                <InputField inputLabel={"Password"} inputType={"password"} inputName={"pass"} Addclasses={"w-full mt-2"} />
+                                <InputField inputLabel={"Password"} inputType={"password"} inputName={"pass"} Addclasses={"w-full mt-2"} errorMessage={errors.pass?.message}/>
 
-                                <InputField inputLabel={"Confirm Password"} inputType={"password"} inputName={"cnfrmPass"} Addclasses={"w-full mt-2"}/>
+                                <InputField inputLabel={"Confirm Password"} inputType={"password"} inputName={"cnfrmPass"} Addclasses={"w-full mt-2"} errorMessage={errors.cnfrmPass?.message}/>
 
                                 <p className='fieldColor mt-2'>Register as:</p>
                                 <div className='flex justify-between'>
-                                    <InputField inputLabel={"Student/Find a Tutor"} inputType={"radio"} inputName={"registerAs"} Addclasses={"setCustomProperty mt-1"} />
-                                    <InputField inputLabel={"Teacher/Become a Tutor"} inputType={"radio"} inputName={"registerAs"} Addclasses={"setCustomProperty mt-1"} />
+                                    <InputField inputLabel={"Student/Find a Tutor"} inputType={"radio"} inputName={"registerAs"} value="Student" Addclasses={"setCustomProperty mt-1"}/>
+                                    <InputField inputLabel={"Teacher/Become a Tutor"} inputType={"radio"} inputName={"registerAs"} value="Teacher" Addclasses={"setCustomProperty mt-1"} />
                                 </div>
 
-                                <input type='submit' value="Next" className='buttonStyle font-semibold border w-full mt-2' onClick={(e) => {e.preventDefault(); onSuccessEnter()}}/>
+                                <input type='submit' value="Next" className='buttonStyle font-semibold border w-full mt-2'/>
 
                                 <p className='fieldColor mt-1'>Already Registered? <Link href="/Login"><strong className='colorRedirect'>Login Now</strong></Link></p>
 
