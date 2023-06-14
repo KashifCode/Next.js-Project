@@ -7,6 +7,7 @@ import "@/components/signup.css"
 import RightSectionLoginSignup from '@/components/RightSectionLoginSignup'
 import InputField from '@/components/InputField'
 
+
 const Login = () => {
     return (
         <>
