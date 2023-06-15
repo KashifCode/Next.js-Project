@@ -42,6 +42,7 @@ const Signup = () => {
         }
         delete data.cnfrmPass;
         data.school = data.school.value;
+        console.log(data);
         setAllStates(Object.assign(allStates, data));
         //let parent = document.getElementById("appendComponent")
         //createRoot(parent).render(<Notification message={"Successfully Registered"}/>)

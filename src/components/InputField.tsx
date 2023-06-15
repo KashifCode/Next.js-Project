@@ -1,11 +1,20 @@
 "use client"
-import React from 'react'
 import "@/components/signup.css"
 import { useContext } from 'react'
 import { signUpContext } from '@/app/Signup/page'
 import ErrorPopOver from '@/components/ErrorPopOver'
 
-const InputField = ({ inputLabel, inputType, inputName, Addclasses, errorMessage, isVal, val }) => {
+interface Props {
+    inputLabel: string,
+    inputType: string,
+    inputName: string,
+    Addclasses: string,
+    errorMessage: string,
+    isVal?: boolean,
+    val?: string,
+}
+
+const InputField = ({ inputLabel, inputType, inputName, Addclasses, errorMessage, isVal, val }: Props) => {
     const { register } = useContext(signUpContext)
     return (
         <div className={`${Addclasses} relative`}>
@@ -17,7 +26,6 @@ const InputField = ({ inputLabel, inputType, inputName, Addclasses, errorMessage
             </div>
             <ErrorPopOver message={errorMessage} isError={errorMessage == undefined ? false : true} />
         </div>
-
     )
 }
 
