@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import Image, { StaticImageData } from 'next/image'
 import "@/components/signup.css"
 
@@ -8,7 +8,7 @@ interface RightImageProps {
     setDivHeight: string
 }
 
-const RightSectionLoginSignup = ({ image, addImgClass, setDivHeight }: RightImageProps) => {
+const RightSectionLoginSignup: FC<RightImageProps> = ({ image, addImgClass, setDivHeight }) => {
     return (
         <div className={`${setDivHeight} w-full md:w-1/2 h-full flex flex-col justify-center items-center`}>
             <div className="rightText w-full h-1/2 flex justify-center items-center">

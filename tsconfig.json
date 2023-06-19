@@ -121,8 +121,8 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/app/Signup/page.js"
-, "tailwind.config.js"  ],
+    "src/app/Signup/page.tsx"
+, "tailwind.config.js", "postcss.config.js", "next.config.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -37,7 +37,12 @@ export const signUp = createSlice({
     initialState,
     reducers: {
         resetForm: () => {
-            return initialState;
+            return {
+                value: {
+                    isAuth: false,
+                    user: initialState.value.user
+                }
+            };
         },
         acceptUser: (state, action: PayloadAction<ActionState>) => {
             console.log("Hi! From Redux Reducer")

@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, {FC} from 'react'
 //import { createRoot } from 'react-dom/client';
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,37 +11,92 @@ import InputField from '@/components/InputField'
 import { resetForm, acceptUser } from '@/Redux/Features/auth-slice'
 import { useState, createContext } from 'react'
 import { useDispatch } from 'react-redux'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm, UseFormRegister, UseFormRegisterReturn } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ErrorPopOver from '@/components/ErrorPopOver';
+import { AppDispatch } from '@/Redux/store'
 
-export const signUpContext = createContext();
-const Signup = () => {
+interface schoolSchema {
+    schoolName: string
+}
 
-    const schema = yup.object().shape({
-        fname: yup.string("Your First Name Must be a String").required("First Name is Required!"),
-        lname: yup.string("Your Last Name Must be a String").required("Last Name is Required!"),
+type schemaShapeType = {
+    fname: yup.StringSchema<string>,
+    lname: yup.StringSchema<string>,
+    email: yup.StringSchema<string>,
+    school: yup.ObjectSchema<schoolSchema>,
+    pass: yup.StringSchema<string>,
+    cnfrmPass: yup.StringSchema<string>,
+}
+
+interface FormData {
+    fname: string,
+    lname: string,
+    email: string,
+    school: schoolSchema | string,
+    pass: string,
+    cnfrmPass?: string,
+    registerAs: string
+}
+
+interface StateData {
+    fname: string,
+    lname: string,
+    email: string,
+    school: string,
+    pass: string,
+    registerAs: string
+}
+
+interface registerContext {
+    register: UseFormRegister<FormData>,
+}
+
+// interface handleSubmitFunction {
+//     onSubmit: (data: FormData) => void
+// }
+
+export const signUpContext = createContext<registerContext | null>({register: () => ({}) as UseFormRegisterReturn<any>});
+
+const Signup: FC = () => {
+
+    const schema = yup.object().shape<schemaShapeType>({
+        fname: yup.string().required("First Name is Required!"),
+        lname: yup.string().required("Last Name is Required!"),
         email: yup.string().email("Invalid Email Format").required("E-Mail is Required!"),
         school: yup.object({
-            value: yup.string("Please select a School!!").required("Please select a School!!"),
+            schoolName: yup.string().required("Please select a School!!"),
         }),
         pass: yup.string().min(8).max(16).required("Password is Required!"),
-        cnfrmPass: yup.string().oneOf([yup.ref("pass"), null], "Your Password Does Not Match!").required("Confirm Your Password Again!")
+        cnfrmPass: yup.string().oneOf([yup.ref("pass"), ""], "Your Password Does Not Match!").required("Confirm Your Password Again!")
     })
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
 
-    const onSubmit = (data) => {
+    const initialValue = {
+        fname: "",
+        lname: "",
+        email: "",
+        school: "",
+        pass: "",
+        registerAs: ""
+    }
+
+    const [allStates, setAllStates] = useState<StateData>(initialValue)
+
+    const onSubmit:SubmitHandler<FormData> = (data: FormData) => {
         let arr = document.getElementsByClassName('setCustomProperty');
         for (let radio of arr) {
-            if (radio.checked) {
-                data.registerAs = radio.value;
+            if ((radio as HTMLInputElement).checked) {
+                data.registerAs = (radio as HTMLInputElement).value;
             }
         }
         delete data.cnfrmPass;
-        data.school = data.school.value;
+        if(typeof data.school !== 'string') {
+            data.school = data.school.schoolName;
+        }
         console.log(data);
         setAllStates(Object.assign(allStates, data));
         //let parent = document.getElementById("appendComponent")
@@ -49,10 +104,9 @@ const Signup = () => {
         dispatch(acceptUser(allStates))
     }
 
-    const [allStates, setAllStates] = useState({})
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const onErrorOccured = () => {
-        setAllStates(dispatch(resetForm()))
+        dispatch(resetForm())
     }
 
     return (
@@ -86,14 +140,14 @@ const Signup = () => {
                                 <div className='flex flex-col items-start w-full mt-2 relative'>
                                     <label htmlFor="school" className="fieldColor pb-2 font-semibold">School</label>
                                     <select className='inputField fieldColor border-2 rounded-md w-full'
-                                        {...register("school.value")}>
+                                        {...register("school.schoolName")}>
                                         <option value="">--Select--</option>
                                         <option value="APS">APS</option>
                                         <option value="Fazaia">Fazaia</option>
                                         <option value="Behria">Behria</option>
                                     </select>
-                                    {errors.school?.value?.message ?
-                                        <ErrorPopOver message={errors.school?.value?.message} isError={true} />
+                                    {errors.school?.schoolName?.message ?
+                                        <ErrorPopOver message={errors.school?.schoolName?.message} isError={true} />
                                         : <></>}
 
                                 </div>
@@ -105,7 +159,7 @@ const Signup = () => {
                                 <p className='fieldColor mt-2'>Register as:</p>
                                 <div className='flex justify-between'>
                                     <InputField inputLabel={"Student/Find a Tutor"} inputType={"radio"} inputName={"registerAs"} Addclasses={"setCustomProperty mt-1"} isVal={true} val={"Student"}/>
-                                    <InputField inputLabel={"Teacher/Become a Tutor"} inputType={"radio"} inputName={"registerAs"} value="Teacher" Addclasses={"setCustomProperty mt-1"} isVal={true} val={"Teacher"}/>
+                                    <InputField inputLabel={"Teacher/Become a Tutor"} inputType={"radio"} inputName={"registerAs"} Addclasses={"setCustomProperty mt-1"} isVal={true} val={"Teacher"}/>
                                 </div>
 
                                 <input type='submit' value="Next" className='buttonStyle font-semibold border w-full mt-2' />

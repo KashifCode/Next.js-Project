@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { FC } from 'react'
 import "@/components/notification.css"
 
 interface NotificationProps {
     message: string,
 }
 
-const Notification = ({ message }: NotificationProps) => {
+const Notification: FC<NotificationProps> = ({ message }) => {
     return (
         <>
             <div id="toast-danger" className="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
